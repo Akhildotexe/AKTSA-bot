@@ -94,4 +94,4 @@ async def on_message(message):
     #     e= discord.Embed(description = " The roosters can be found here (**NOTE this is for 2021- 2022 season**)",color=0x0037ff)
     #     await message.reply(embed=e)
         
-client.run("ODkyNTg3MTk2NDUwNzM4MTg3.YVPEmw.wa-QktV_Qz3_cgcLUUBDrplkbus")
+client.run("ha u thought")
