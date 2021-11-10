@@ -34,7 +34,6 @@ async def help(ctx):
 
 @client.command()
 async def announce(ctx):
-    
     await ctx.send(embed=discord.Embed(description="waiting for your message...", color=discord.Color.green()))
     msg = await client.wait_for("message", check=lambda message:message.channel == ctx.channel and message.author == ctx.author)
     e= discord.Embed(title="In todays meeting we covered... ",description = f"{msg.content}",color = 0x0037ff)
