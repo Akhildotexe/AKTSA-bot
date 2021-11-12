@@ -1,6 +1,5 @@
 import discord
 from datetime import timedelta, datetime
-from discord.embeds import Embed
 from discord.ext import commands
 from discord_together import DiscordTogether
 from discord_components import DiscordComponents, Button, ButtonStyle, Interaction
@@ -18,17 +17,17 @@ async def on_ready():
     global up_time
     up_time= datetime.now()
     print(f'It works {client.user}')
-    
-
-@client.command()
-async def testing(ctx):
-    await ctx.send("works!")
    
+
 
 
 @client.command()
 async def help(ctx):
-    e=discord.Embed(title="Coming soon")
+    e=discord.Embed(title="Help page",description = "```yaml \n \
+        > 1. t!announce| To announce important info.\
+        > 2. t!clear| after t!clear enter amt of msgs to clear EX: t!clear 10 \
+        > 3. t!lock| after t!lock specify a channel EX: t!lock #general\
+        > 4. t!unlock| after t!lock specify a channel to unlock EX: t!lock #general \n```")
     await ctx.send(embed=e)
     
 
@@ -36,8 +35,45 @@ async def help(ctx):
 async def announce(ctx):
     await ctx.send(embed=discord.Embed(description="waiting for your message...", color=discord.Color.green()))
     msg = await client.wait_for("message", check=lambda message:message.channel == ctx.channel and message.author == ctx.author)
-    e= discord.Embed(title="In todays meeting we covered... ",description = f"{msg.content}",color = 0x0037ff)
+    e= discord.Embed(title="Volunteering Information... ",description = f"{msg.content}",color = 0x0037ff)
     await ctx.send(embed=e)
+
+
+@client.command()
+async def clear(ctx, amount=5):
+    await ctx.channel.purge(limit=amount)
+
+
+@client.command()
+@client.guild_only()
+@client.has_permissions(manage_channels=True)
+async def lock(ctx, *, channel:discord.TextChannel=None):
+    channel = channel if channel else ctx.channel
+    if channel.overwrites_for(ctx.guild.default_role) == discord.PermissionOverwrite(send_messages=False):
+      text = f'{channel.mention}  is already locked.'
+      color = 0xFFA500
+    else:
+      await channel.set_permissions(ctx.guild.default_role, send_messages=False)
+      color = 0xFF0000
+      text = f':lock: {channel.mention}  has been locked.'
+    embed = discord.Embed(description = text, color = color)
+    await ctx.send(embed=embed)
+
+
+@client.command()
+@client.guild_only()
+@client.has_permissions(manage_channels=True)
+async def unlock(ctx, channel:discord.TextChannel=None):
+    channel = channel if channel else ctx.channel
+    if channel.overwrites_for(ctx.guild.default_role) == discord.PermissionOverwrite(send_messages=None):
+      text = f'{channel.mention}  is already unlocked.'
+      color = 0xFFA500
+    else:
+      await channel.set_permissions(ctx.guild.default_role, send_messages=None)
+      color = 0x00FF00
+      text = f':unlock: {channel.mention}  has been unlocked.'
+    embed = discord.Embed(description = text, color = color)
+    await ctx.send(embed=embed)
 
 
 @client.event
@@ -94,4 +130,4 @@ async def on_message(message):
     #     e= discord.Embed(description = " The roosters can be found here (**NOTE this is for 2021- 2022 season**)",color=0x0037ff)
     #     await message.reply(embed=e)
         
-client.run("ha u thought")
+client.run("ODkyNTg3MTk2NDUwNzM4MTg3.YVPEmw.z_EJjlOrOI4NFjXy3HjIpniu6ls")
